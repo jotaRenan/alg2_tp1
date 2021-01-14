@@ -79,33 +79,28 @@ def compress(FileIn, FileOut):
 
 
 def decompress(FileIn, FileOut):
-    dic = {}
-    dic[0] = (0, "")
-    buf = StringIO()
-    size = 1
     with open(FileIn, mode="rb") as f:
         binary = f.read()
+
+    dic = {}
+    dic[0] = ""
+    buf = StringIO()
+    size = 1
 
     for i in range(0, len(binary), Byte_Offset + 1):
         k = int.from_bytes(binary[i : i + Byte_Offset], byteorder="big")
         v = "".join(map(chr, [binary[i + Byte_Offset]]))
-        dic[size] = (k, v)
-        progress = getPrefix(size, dic)
+        cur_string = dic[k] + v
+        dic[size] = cur_string
         if i + Byte_Offset + 1 >= len(binary):
-            buf.write(progress[:-1])
+            buf.write(cur_string[:-1])
         else:
-            buf.write(progress)
-        size = size + 1
+            buf.write(cur_string)
+        size += 1
 
     with open(FileOut, mode="w") as f:
         buf.seek(0)
         shutil.copyfileobj(buf, f)
-
-
-def getPrefix(idx, dic):
-    if dic[idx][1] == "":
-        return ""
-    return getPrefix(dic[idx][0], dic) + dic[idx][1]
 
 
 if __name__ == "__main__":
