@@ -5,6 +5,7 @@ from io import StringIO
 from struct import unpack
 
 Txt = "txt"
+Byte_Offset = 4
 
 
 def main():
@@ -43,12 +44,12 @@ def compress(FileIn, FileOut):
             if dic.contains(string + char):
                 string = string + char
             else:
-                f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
+                f.write(dic.lookup(string).to_bytes(Byte_Offset, byteorder="big"))
                 f.write(char.encode("utf-8"))
                 dic.put(string + char)
                 string = ""
         if char:
-            f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
+            f.write(dic.lookup(string).to_bytes(Byte_Offset, byteorder="big"))
             f.write(" ".encode("utf-8"))
 
 
@@ -60,9 +61,9 @@ def decompress(FileIn, FileOut):
     with open(FileIn, mode="rb") as f:
         binary = f.read()
 
-    for i in range(0, len(binary), 3):
-        k = int.from_bytes(binary[i : i + 2], byteorder="big")
-        v = "".join(map(chr, [binary[i + 2]]))
+    for i in range(0, len(binary), Byte_Offset + 1):
+        k = int.from_bytes(binary[i : i + Byte_Offset], byteorder="big")
+        v = "".join(map(chr, [binary[i + Byte_Offset]]))
         dic[size] = (k, v)
         progress = getPrefix(size, dic)
         if i + 3 >= len(binary):
