@@ -6,6 +6,7 @@ from struct import unpack
 
 Txt = "txt"
 
+
 def main():
     in_filename = sys.argv[1]
     file_extension = in_filename.split(".")[-1]
@@ -15,25 +16,41 @@ def main():
         decompress("output.tz8", "decoded.txt")
 
 
+class TrieDictionary:
+    dic = {}
+    size = 0
+
+    def contains(self, possible_key):
+        return possible_key in self.dic
+
+    def lookup(self, key):
+        return self.dic[key]
+
+    def put(self, key):
+        self.dic[key] = self.size
+        self.size += 1
+
+
 def compress(FileIn, FileOut):
     with open(FileIn, mode="r") as input_file:
         text = input_file.read()
-    dic = {}
+    dic = TrieDictionary()
     size = 1
-    dic[""] = 0
+
+    dic.put("")
     string = ""
     with open(FileOut, mode="wb") as f:
         for char in text:
-            if string + char in dic:
+            if dic.contains(string + char):
                 string = string + char
             else:
-                f.write(dic[string].to_bytes(2, byteorder="big"))
+                f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
                 f.write(char.encode("utf-8"))
-                dic[string + char] = size
+                dic.put(string + char)
                 size += 1
                 string = ""
         if char:
-            f.write(dic[string].to_bytes(2, byteorder="big"))
+            f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
             f.write(" ".encode("utf-8"))
 
 
