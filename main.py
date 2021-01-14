@@ -18,7 +18,7 @@ def main():
 
 class TrieDictionary:
     dic = {}
-    size = 0
+    last_used_code = 0
 
     def contains(self, possible_key):
         return possible_key in self.dic
@@ -27,8 +27,8 @@ class TrieDictionary:
         return self.dic[key]
 
     def put(self, key):
-        self.dic[key] = self.size
-        self.size += 1
+        self.dic[key] = self.last_used_code
+        self.last_used_code += 1
 
 
 def compress(FileIn, FileOut):
