@@ -35,7 +35,6 @@ def compress(FileIn, FileOut):
     with open(FileIn, mode="r") as input_file:
         text = input_file.read()
     dic = TrieDictionary()
-    size = 1
 
     dic.put("")
     string = ""
@@ -47,7 +46,6 @@ def compress(FileIn, FileOut):
                 f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
                 f.write(char.encode("utf-8"))
                 dic.put(string + char)
-                size += 1
                 string = ""
         if char:
             f.write(dic.lookup(string).to_bytes(2, byteorder="big"))
