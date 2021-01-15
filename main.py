@@ -44,7 +44,7 @@ def get_output_filename(optional_args):
 
 class TrieDictionary:
     dic = {}
-    last_used_code = 0
+    next_code = 0
 
     def contains(self, possible_key):
         return possible_key in self.dic
@@ -53,8 +53,8 @@ class TrieDictionary:
         return self.dic[key]
 
     def put(self, key):
-        self.dic[key] = self.last_used_code
-        self.last_used_code += 1
+        self.dic[key] = self.next_code
+        self.next_code += 1
 
 
 def compress(FileIn, FileOut):
